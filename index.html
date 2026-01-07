@@ -466,6 +466,15 @@
       });
     });
 
+    window.addEventListener("message", (event) => {
+      const msg = event.data;
+      if (!msg || msg.type !== "SET_HTML") return;
+
+      const el = document.querySelector(msg.selector);
+      if (el) el.innerHTML = msg.html;
+    });
+
+
     async function fetchLogData() {
       const response = await fetch('/data/log.csv')
       const data = await response.text();
