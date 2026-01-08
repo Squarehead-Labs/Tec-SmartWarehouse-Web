@@ -49,19 +49,19 @@
           </li>
 
           <li class="pc-item">
-            <a href="/index.html?q=system" class="pc-link">
+            <a href="#" data-option="system" class="pc-link">
               <span class="pc-micon"><i class="ti ti-activity"></i></span>
               <span class="pc-mtext">Sistema</span>
             </a>
           </li>
           <li class="pc-item">
-            <a href="/index.html?q=temperature" class="pc-link">
+            <a href="#" data-option="temperature" class="pc-link">
               <span class="pc-micon"><i class="ti ti-temperature-plus"></i></span>
               <span class="pc-mtext">Temperatura</span>
             </a>
           </li>
           <li class="pc-item">
-            <a href="/index.html?q=user" class="pc-link">
+            <a href="#" data-option="user" class="pc-link">
               <span class="pc-micon"><i class="ti ti-face-id"></i></span>
               <span class="pc-mtext">Usuario</span>
             </a>
@@ -73,13 +73,13 @@
           </li>
 
           <li class="pc-item">
-            <a href="/index.html?q=access" class="pc-link">
+            <a href="#" data-option="access" class="pc-link">
               <span class="pc-micon"><i class="ti ti-key"></i></span>
               <span class="pc-mtext">Accesos</span>
             </a>
           </li>
           <li class="pc-item">
-            <a href="/index.html?q=wifi" class="pc-link">
+            <a href="#" data-option="wifi" class="pc-link">
               <span class="pc-micon"><i class="ti ti-wifi"></i></span>
               <span class="pc-mtext">Wi-fi</span>
             </a>
@@ -460,10 +460,16 @@
 
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      Promise.all([fetchLogData(), fetchWeatherData()]).then(() => {
-        console.log('CSV data fetched and logged to console.');
-      });
+    document.addEventListener("click", (e) => {
+      const link = e.target.closest("a[data-option]");
+      if (!link) return;
+
+      console.info("Clicked link with option:", link.dataset.option);
+      e.preventDefault();
+      window.parent.postMessage(
+        link.dataset.option,
+        "*"
+      );
     });
 
     window.addEventListener("message", (event) => {
@@ -473,36 +479,6 @@
       const el = document.querySelector(msg.selector);
       if (el) el.innerHTML = msg.html;
     });
-
-
-    async function fetchLogData() {
-      const response = await fetch('/data/log.csv')
-      const data = await response.text();
-      console.table(csvToJson(data));
-    }
-
-    async function fetchWeatherData() {
-      const response = await fetch('/data/weather.csv')
-      const data = await response.text();
-      console.table(csvToJson(data));
-    }
-
-    function csvToJson(csvString) {
-      const rows = csvString.split("\n");
-      const headers = rows[0].split(",");
-      const jsonData = [];
-
-      for (let i = 1; i < rows.length; i++) {
-        const values = rows[i].split(",");
-        const obj = {};
-        for (let j = 0; j < headers.length; j++) {
-          obj[headers[j]] = values[j];
-        }
-        jsonData.push(obj);
-      }
-
-      return jsonData
-    }
   </script>
 
 </body>
