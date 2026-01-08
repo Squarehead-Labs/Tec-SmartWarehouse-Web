@@ -33,7 +33,7 @@ function csvToJson(csvString) {
 function loadData() {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
-    const dataFile = urlParams.get('q') + '.csv' || 'x.csv';
+    const dataFile = urlParams.get('q') || 'default';
 
     fetch(`/data/${dataFile}`)
         .then(response => response.text())
